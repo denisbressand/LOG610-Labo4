@@ -8,12 +8,12 @@ import java.io.IOException;
  Session :           Hiver 2007
  Groupe :            01
  Projet :            Laboratoire #3
- Étudiant(e)(s) :    Maxime Bouchard
+ ï¿½tudiant(e)(s) :    Maxime Bouchard
  Code(s) perm. :     BOUM24028309
  
  Professeur :        Michel Lavoie 
  Nom du fichier :    Application.java
- Date crée :         2007-03-10
+ Date crï¿½e :         2007-03-10
  Date dern. modif.   X
  *******************************************************/
 /**
@@ -21,7 +21,7 @@ import java.io.IOException;
  * @author Max
  *
  */
-public class ServeurDNS {
+public class OldServeurDNS {
 	
 	/**
 	 * @param args
@@ -31,8 +31,8 @@ public class ServeurDNS {
 		System.out.println("--------------------------------------");
 		System.out.println("Serveur DNS");
 		System.out.println("Ecole de Technologie Superieures (ETS)");
-		System.out.println("LOG610 - Réseau de télécommunication");
-		System.out.println("Réalisé par Maxime Bouchard");
+		System.out.println("LOG610 - Rï¿½seau de tï¿½lï¿½communication");
+		System.out.println("Rï¿½alisï¿½ par Maxime Bouchard");
 		System.out.println("--------------------------------------");
 		
 		if (args.length == 0) {
