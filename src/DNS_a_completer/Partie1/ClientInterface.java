@@ -33,25 +33,23 @@ public class ClientInterface extends JFrame {
 		
 		getContentPane().setLayout(null);
 		
-		JButton btnActivateServer = new JButton("Activate Server");
-		btnActivateServer.addMouseListener(new MouseAdapter() {
+		JButton btnConnect = new JButton("Connect");
+		btnConnect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnConnect.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				//Activate Server on click code goes here
 			}
 		});
-		btnActivateServer.setBounds(65, 106, 136, 23);
-		getContentPane().add(btnActivateServer);
+		btnConnect.setBounds(65, 106, 136, 23);
+		getContentPane().add(btnConnect);
 		
-		JButton btnSendMessage = new JButton("Send Message");
-		btnSendMessage.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				//Send Message on click code goes here
-			}
-		});
-		btnSendMessage.setBounds(236, 106, 136, 23);
-		getContentPane().add(btnSendMessage);
+		JLabel lblmessage = new JLabel("(message)");
+		lblmessage.setBounds(65, 174, 107, 14);
+		getContentPane().add(lblmessage);
 		
 		
 		
