@@ -1,14 +1,3 @@
-<<<<<<< HEAD:src/DNS_a_completer/Partie1/Client.java
-package Partie1;
-
-public class Client {
-	
-	public static void main(){
-		
-	}
-
-}
-=======
 package Partie1;
 
 import java.io.BufferedReader;
@@ -64,4 +53,3 @@ public class Client {
 	}
 
 }
->>>>>>> MOdele:DNS_a_completer/Partie1/Client.java

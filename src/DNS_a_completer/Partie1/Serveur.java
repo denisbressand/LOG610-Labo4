@@ -1,13 +1,3 @@
-<<<<<<< HEAD:src/DNS_a_completer/Partie1/Serveur.java
-package Partie1;
-
-public class Serveur {
-
-	public static void main(){
-		
-	}
-}
-=======
 package Partie1;
 
 import java.io.IOException;
@@ -59,4 +49,3 @@ public class Serveur {
 		
 	}
 }
->>>>>>> MOdele:DNS_a_completer/Partie1/Serveur.java

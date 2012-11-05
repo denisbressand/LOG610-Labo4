@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 
 public class ClientInterface extends JFrame {
 	
+	private Client client = new Client();
 	/**
 	 * @param args
 	 */
@@ -42,7 +43,7 @@ public class ClientInterface extends JFrame {
 		btnConnect.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				//Activate Server on click code goes here
+				client.openSocket("localhost", 4444);
 			}
 		});
 		btnConnect.setBounds(65, 106, 136, 23);
