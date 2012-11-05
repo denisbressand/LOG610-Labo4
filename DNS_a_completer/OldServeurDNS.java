@@ -31,8 +31,8 @@ public class OldServeurDNS {
 		System.out.println("--------------------------------------");
 		System.out.println("Serveur DNS");
 		System.out.println("Ecole de Technologie Superieures (ETS)");
-		System.out.println("LOG610 - R�seau de t�l�communication");
-		System.out.println("R�alis� par Maxime Bouchard");
+		System.out.println("LOG610 - Réseau de télécommunication");
+		System.out.println("Réalisé par Maxime Bouchard");
 		System.out.println("--------------------------------------");
 		
 		if (args.length == 0) {
