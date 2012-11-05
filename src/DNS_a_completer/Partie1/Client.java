@@ -14,6 +14,7 @@ public class Client {
 	public void openSocket(String host, int serverPort){
 		try {
 			clientSocket = new Socket(host, serverPort);
+			System.out.println("ClientSocket open");
 		}catch(IOException e ){
 			System.out.println("OpenSocket exeption "+e.getMessage());
 		}
@@ -30,6 +31,7 @@ public class Client {
 			InputStreamReader is = new InputStreamReader(in);
 			BufferedReader br = new BufferedReader(is);
 			read = br.readLine();
+			System.out.println("Read file");
 		}catch(IOException e){
 			System.out.println("Exception readData "+e.getMessage());
 		}
@@ -40,6 +42,7 @@ public class Client {
 	public void closeSocket(){
 		try{
 			clientSocket.close();
+			System.out.println("Socket close");
 		}catch(IOException e){
 			System.out.println("CloseSocket exception "+e.getMessage());
 		}
