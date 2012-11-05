@@ -31,25 +31,11 @@ public class ServerInterface extends JFrame {
 		btnActivateServer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//Activate Server code goes here
-				serveur.connectServeur(4444);
+				serveur.go(4444);
 			}
 		});
 		btnActivateServer.setBounds(71, 93, 121, 23);
-		getContentPane().add(btnActivateServer);
-		
-		JButton btnSendMessage = new JButton("Send Message");
-		btnSendMessage.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				//Send Message code goes here
-				serveur.sendMessage("Hello from server!");
-			}
-		});
-		btnSendMessage.setBounds(71, 148, 121, 23);
-		getContentPane().add(btnSendMessage);
-		
-		
+		getContentPane().add(btnActivateServer);	
 		
 	}
 

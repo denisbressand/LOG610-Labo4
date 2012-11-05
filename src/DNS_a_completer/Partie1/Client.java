@@ -10,23 +10,24 @@ import org.omg.CORBA.portable.InputStream;
 public class Client {
 	
 	private Socket clientSocket; 
+	private Boolean connected = false;	
 	
-	public void openSocket(String host, int serverPort){
+	public String go(String host, int serverPort)
+	{
 		try {
 			clientSocket = new Socket(host, serverPort);
 			System.out.println("ClientSocket open");
+			connected = true;
 		}catch(IOException e ){
 			System.out.println("OpenSocket exeption "+e.getMessage());
 		}
-	}
-	
-	public String readData(){
+		
 		int MAXLENGTH = 256; 
 		byte[] buff = new byte[ MAXLENGTH];
 		String read = null;
 		try{
-			InputStream in = (InputStream) clientSocket.getInputStream();
-			in.read(buff);
+			java.io.InputStream in =  clientSocket.getInputStream();
+			//in.read(buff);
 			
 			InputStreamReader is = new InputStreamReader(in);
 			BufferedReader br = new BufferedReader(is);
@@ -35,24 +36,22 @@ public class Client {
 		}catch(IOException e){
 			System.out.println("Exception readData "+e.getMessage());
 		}
-		return read;
-		
-	}
-	
-	public void closeSocket(){
+
 		try{
 			clientSocket.close();
+			connected = false;
 			System.out.println("Socket close");
 		}catch(IOException e){
 			System.out.println("CloseSocket exception "+e.getMessage());
 		}
+		
+		return read;
+		
 	}
 	
-	
-	public static void main(){
-		
-		
-		
+	public Boolean isConnected()
+	{
+		return connected;
 	}
 
 }

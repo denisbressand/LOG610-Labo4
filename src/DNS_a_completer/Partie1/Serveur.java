@@ -8,11 +8,11 @@ import org.omg.CORBA.portable.OutputStream;
 
 public class Serveur {
 
-	private Socket connectSocket; 
-	private ServerSocket server;
+	private Socket connectSocket = null; 
+	private ServerSocket server = null;
 	
-	public void connectServeur(int port){
-		
+	public void go(int port)
+	{
 		try{
 			server = new ServerSocket(port);
 			System.out.println("Server connect");
@@ -26,20 +26,17 @@ public class Serveur {
 		}catch(IOException e){
 			System.out.println("Socket exception: "+e.getMessage());
 		}
-	}
-	
-	public void sendMessage(String message){
+		
+		String message = "Hello from server!";
 		
 		try {
-			OutputStream out = (OutputStream) connectSocket.getOutputStream();
+			java.io.OutputStream out = connectSocket.getOutputStream();
 			out.write( message.getBytes());
 			System.out.println("Send Message");
 		}catch(IOException e){
 			System.out.println("SendMessage exception"+e.getMessage());
 		}
-	}
-	
-	public void closeSocket(){
+		
 		try{
 			connectSocket.close();
 			server.close();
@@ -47,9 +44,6 @@ public class Serveur {
 		}catch(IOException e){
 			System.out.println("CloseSocket exception"+ e.getMessage());
 		}
-	}
-	
-	public static void main(){
 		
 	}
 }

@@ -5,12 +5,10 @@ public class Run {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		ClientInterface clientInterface = new ClientInterface();
-		clientInterface.show();
-		
+	public static void main(String[] args) {		
 		ServerInterface serverInterface = new ServerInterface();
 		serverInterface.show();
+		
 	}
 
 }

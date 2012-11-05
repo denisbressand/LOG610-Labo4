@@ -6,10 +6,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
 import javax.swing.JLabel;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
@@ -17,7 +13,6 @@ import java.awt.event.MouseEvent;
 
 public class ClientInterface extends JFrame {
 	
-	private Client client = new Client();
 	/**
 	 * @param args
 	 */
@@ -25,6 +20,9 @@ public class ClientInterface extends JFrame {
 		ClientInterface inter = new ClientInterface();
 		inter.show();
 	}
+	
+	private JLabel lblmessage;
+	private Client client = new Client();
 	
 	
 	public ClientInterface() {
@@ -43,17 +41,15 @@ public class ClientInterface extends JFrame {
 		btnConnect.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				client.openSocket("localhost", 4444);
+				lblmessage.setText(client.go("localhost", 4444));
 			}
 		});
 		btnConnect.setBounds(65, 106, 136, 23);
 		getContentPane().add(btnConnect);
 		
-		JLabel lblmessage = new JLabel("(message)");
+		lblmessage = new JLabel("(message)");
 		lblmessage.setBounds(65, 174, 107, 14);
 		getContentPane().add(lblmessage);
-		
-		
 		
 		
 	}
