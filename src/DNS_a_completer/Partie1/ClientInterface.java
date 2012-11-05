@@ -23,13 +23,14 @@ public class ClientInterface extends JFrame {
 	public static void main(String[] args) {
 		ClientInterface inter = new ClientInterface();
 		inter.show();
-
 	}
 	
 	
 	public ClientInterface() {
 		
 		setBounds(100, 100, 459, 258);
+		
+		setTitle("Client");
 		
 		getContentPane().setLayout(null);
 		
