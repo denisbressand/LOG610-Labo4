@@ -15,6 +15,7 @@ import javax.swing.JMenu;
 import java.awt.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 
 //Java get ip code
 //http://www.roseindia.net/java/java-get-example/get-ip-address.shtml
