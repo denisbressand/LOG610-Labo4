@@ -63,14 +63,17 @@ public class UDPSender implements InterfaceUDPServices {
 	}
 	
 	public void SendPacketNow(){
-		//Envoi du packet à un serveur dns pour interrogation
+		//Envoi du packet ˆ un serveur dns pour interrogation
+	
 		try {
-			
+			byte[] buf = new byte[1000];
 			//cree l'adresse de destination
-			
+			InetAddress address = packet.getAddress();
 			//Crée le packet
+			packet = new DatagramPacket(buf, buf.length, address, port);
 
 			//Envoi le packet
+			SendSocket.send(packet);
 
 			
 		} catch (Exception e) {
