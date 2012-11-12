@@ -1,6 +1,9 @@
 package Partie2;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,8 +51,10 @@ public class ServerInterface extends JFrame{
 	
 	
 	private Integer port;
-	private ServerThread serverThread;
 	private ServerInterface me;
+	private ServerSocket server;
+	private Socket connectSocket = null; 
+	private ServerWaitingThread serverWaitingThread;
 	
 	public ServerInterface() {
 		
@@ -82,8 +87,18 @@ public class ServerInterface extends JFrame{
 				btnStartServer.setEnabled(false);
 				btnStopServer.setEnabled(true);
 				txtF_Port.setEnabled(false);
-				serverThread = new ServerThread(me, port);
-				serverThread.start();
+				
+				try{
+					server = new ServerSocket(port);
+					System.out.println("Server connect");
+				}catch( IOException e){
+					System.out.println("ServerSocket exception "+e.getMessage());
+				}
+				
+				serverWaitingThread = new ServerWaitingThread(server, me);
+				serverWaitingThread.start();
+			
+
 				list_LastAction.select(list_LastAction.getItemCount() - 1);
 			}
 		});
@@ -100,7 +115,14 @@ public class ServerInterface extends JFrame{
 				btnStartServer.setEnabled(true);
 				btnStopServer.setEnabled(false);
 				txtF_Port.setEnabled(true);
-				serverThread.stop();
+				try {
+					server.close();
+				} catch (IOException e1) {
+					System.out.println("Server Close"+e1.getMessage());
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			
 				list_LastAction.select(list_LastAction.getItemCount() - 1);
 			}
 		});
@@ -153,6 +175,42 @@ public class ServerInterface extends JFrame{
 		list_LastAction.add(dateFormat.format(cal.getTime()) + ": " + message);
 		
 		list_LastAction.select(list_LastAction.getItemCount() - 1);
+	}
+	
+	private static class ServerWaitingThread extends Thread{
+	  
+		private Socket connectSocket; 
+		private ServerSocket server;
+		private ServerInterface me;
+		private ServerThread serverThread;
+		public ServerWaitingThread(ServerSocket server, ServerInterface me){
+			this.server = server;
+			this.me = me;
+			
+		}
+		public void run()
+		{
+			while(this.isAlive()){
+				
+				try {
+					if(!server.isClosed()){
+						connectSocket = server.accept();
+						serverThread = new ServerThread(me, server, connectSocket);
+						serverThread.start();
+					}else{
+						this.finalize();
+					}
+				} catch (IOException e) {
+					System.out.println("ServerThread exception"+ e.getMessage());
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+
+				
+			}
+		}
 	}
 	
 }
