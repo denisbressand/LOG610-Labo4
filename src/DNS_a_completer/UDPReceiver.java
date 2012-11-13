@@ -132,26 +132,68 @@ public class UDPReceiver extends Thread {
 	
 	public void run(){
 
+		
 		try{
 			
 			//*Creation d'un socket UDP
-			
+			DatagramSocket socket = new DatagramSocket(port); 
+			System.out.println("run");
 			//*Boucle infinie de recpetion
 			while(true){
 				
 				//*Reception d'un paquet UDP via le socket
+				byte[] buf = new byte[1000];
+				DatagramPacket packet = new DatagramPacket(buf, buf.length);
+				socket.receive(packet);
 				
 				//*Creation d'un DataInputStream ou ByteArrayInputStream pour manipuler les bytes du paquet				
-
+				ByteArrayInputStream in = new ByteArrayInputStream(buf); 
+				
 				//*Lecture et sauvegarde des deux premier bytes, qui specifie l'identifiant
+				String id = null;
+				id = Byte.toString(buf[0]) + Byte.toString(buf[1]);				
+				System.out.println("ID : " + id);
 				
 				//*Lecture et sauvegarde du huitieme byte, qui specifie le nombre de reponse dans le message 
-
+				Integer nbReponse = Integer.decode(Byte.toString(buf[1]));
+				System.out.println("nombre de reponse : " + nbReponse);
 				
 				//*Dans le cas d'une reponse
+				String queryDomainName = "";
+				String numbers = "";
+				if(nbReponse >= 1){
+					
 				
-
 					//*Lecture du Query Domain name, a partir du 13 byte
+					int count = 13;
+					
+					boolean go = true;
+					while(count < 100 && go)
+					{
+						int content = Integer.decode(Byte.toString(buf[count]));
+						
+						
+						
+						if(content == 0)
+						{
+							go = false;
+						}
+						else
+						{
+							if( 0 <= content && content <= 32)
+							{
+								content = 46;
+							}
+							
+							char letter = (char) content;
+							queryDomainName += letter;
+							count++;
+							numbers  += content + " ";
+						}
+					}
+					
+					System.out.println(queryDomainName);
+					System.out.println(numbers);
 
 					//*Sauvegarde du Query Domain name
 					
@@ -170,8 +212,11 @@ public class UDPReceiver extends Thread {
 					//*Faire parvenir le paquet reponse au demandeur original, ayant emis une requete 
 					//*avec cet identifiant
 					
-
+				}
 				//*Dans le cas d'une requete
+				if(queryDomainName != null)
+				{
+				
 				
 					//*Lecture du Query Domain name, a partir du 13 byte
 					
@@ -199,6 +244,7 @@ public class UDPReceiver extends Thread {
 							//*Placer ce paquet dans le socket
 					
 							//*Envoyer le paquet
+				}
 			}
 		}catch(Exception e){
 			System.err.println("Problème à l'exécution :");
