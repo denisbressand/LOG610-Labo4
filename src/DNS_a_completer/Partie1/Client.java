@@ -1,18 +1,14 @@
 package Partie1;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
-
-import org.omg.CORBA.portable.InputStream;
 
 public class Client {
 	
 	private Socket clientSocket; 
 	private Boolean connected = false;	
 	
-	public String go(String host, int serverPort)
+	public void go(String host, int serverPort, String message)
 	{
 		try {
 			clientSocket = new Socket(host, serverPort);
@@ -22,19 +18,12 @@ public class Client {
 			System.out.println("OpenSocket exeption "+e.getMessage());
 		}
 		
-		int MAXLENGTH = 256; 
-		byte[] buff = new byte[ MAXLENGTH];
-		String read = null;
-		try{
-			java.io.InputStream in =  clientSocket.getInputStream();
-			//in.read(buff);
-			
-			InputStreamReader is = new InputStreamReader(in);
-			BufferedReader br = new BufferedReader(is);
-			read = br.readLine();
-			System.out.println("Read file");
+		try {
+			java.io.OutputStream out = clientSocket.getOutputStream();
+			out.write( message.getBytes());
+			System.out.println("Send Message");
 		}catch(IOException e){
-			System.out.println("Exception readData "+e.getMessage());
+			System.out.println("SendMessage exception"+e.getMessage());
 		}
 
 		try{
@@ -45,7 +34,6 @@ public class Client {
 			System.out.println("CloseSocket exception "+e.getMessage());
 		}
 		
-		return read;
 		
 	}
 	

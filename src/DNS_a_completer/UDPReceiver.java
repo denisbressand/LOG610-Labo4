@@ -155,13 +155,13 @@ public class UDPReceiver extends Thread {
 				System.out.println("ID : " + id);
 				
 				//*Lecture et sauvegarde du huitieme byte, qui specifie le nombre de reponse dans le message 
-				Integer nbReponse = Integer.decode(Byte.toString(buf[1]));
+				Integer nbReponse = Integer.decode(Byte.toString(buf[7]));
 				System.out.println("nombre de reponse : " + nbReponse);
 				
 				//*Dans le cas d'une reponse
 				String queryDomainName = "";
 				String numbers = "";
-				if(nbReponse >= 1){
+				if(nbReponse == 0){
 					
 				
 					//*Lecture du Query Domain name, a partir du 13 byte

@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JTextField;
 
 public class ClientInterface extends JFrame {
 	
@@ -20,9 +21,8 @@ public class ClientInterface extends JFrame {
 		ClientInterface inter = new ClientInterface();
 		inter.show();
 	}
-	
-	private JLabel lblmessage;
 	private Client client = new Client();
+	private JTextField txtF_Message;
 	
 	
 	public ClientInterface() {
@@ -33,7 +33,7 @@ public class ClientInterface extends JFrame {
 		
 		getContentPane().setLayout(null);
 		
-		JButton btnConnect = new JButton("Connect");
+		JButton btnConnect = new JButton("Connect and Send");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -41,15 +41,17 @@ public class ClientInterface extends JFrame {
 		btnConnect.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				lblmessage.setText(client.go("localhost", 4444));
+				client.go("localhost", 4444, txtF_Message.getText());
+				
 			}
 		});
-		btnConnect.setBounds(65, 106, 136, 23);
+		btnConnect.setBounds(65, 106, 197, 23);
 		getContentPane().add(btnConnect);
 		
-		lblmessage = new JLabel("(message)");
-		lblmessage.setBounds(65, 174, 107, 14);
-		getContentPane().add(lblmessage);
+		txtF_Message = new JTextField();
+		txtF_Message.setBounds(65, 143, 197, 20);
+		getContentPane().add(txtF_Message);
+		txtF_Message.setColumns(10);
 		
 		
 	}
