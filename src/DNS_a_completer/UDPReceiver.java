@@ -161,7 +161,7 @@ public class UDPReceiver extends Thread {
 				int count = 0;
 				DomainName=null;
 
-				if(nbReponse ==  0)//*Dans le cas d'une reponse
+				if(nbReponse ==  1)//*Dans le cas d'une reponse
 				{
 					//*Lecture du Query Domain name, a partir du 13 byte		
 					//*Sauvegarde du Query Domain name
@@ -177,7 +177,7 @@ public class UDPReceiver extends Thread {
 					System.out.println("packet port : " + packet.getPort());
 					
 					//*Capture de l'adresse IP
-					this.adresseIP = packet.getAddress().toString().substring(1);
+					this.adresseIP = packet.getAddress().toString();
 					this.port = packet.getPort();
 					
 					//*Ajouter la correspondance dans le fichier seulement si une seule
@@ -189,11 +189,12 @@ public class UDPReceiver extends Thread {
 					//*avec cet identifiant
 					byte[] udpAPC = new UDPAnswerPacketCreator().CreateAnswerPacket(buf, this.adresseIP);
 					DatagramPacket datagramPacket = new DatagramPacket(udpAPC, udpAPC.length);
-					UDPSender udpSender = new UDPSender(datagramPacket, this.adrIP, port);
+					UDPSender udpSender = new UDPSender(datagramPacket, SERVER_DNS, port);
+					udpSender.setSocket(socket);
 					udpSender.SendPacketNow();
 					
 				}				
-				else if(nbReponse == 1)//*Dans le cas d'une requete
+				else if(nbReponse == 0)//*Dans le cas d'une requete
 				{
 				
 				
@@ -202,22 +203,34 @@ public class UDPReceiver extends Thread {
 					int num = getQueryDomainName(buf);
 					
 					//*Sauvegarde de l'adresse, du port et de l'identifiant de la requete
-					this.adrIP = packet.getAddress().toString();
+					this.adresseIP = packet.getAddress().toString().substring(1);
 					this.port = packet.getPort();
 
 					
 					if(RedirectionSeulement)//*Si le mode est redirection seulement
 					{
 						//*Rediriger le paquet vers le serveur DNS
+						byte[] udpAPC = new UDPAnswerPacketCreator().CreateAnswerPacket(buf, this.adresseIP);
+						DatagramPacket datagramPacket = new DatagramPacket(udpAPC, udpAPC.length);
+						UDPSender udpSender = new UDPSender(datagramPacket, SERVER_DNS, port);
+						udpSender.setSocket(socket);
+						udpSender.SendPacketNow();
 					}
 					else//*Sinon
 					{	
 						//*Rechercher l'adresse IP associe au Query Domain name dans le fichier de 
 						//*correspondance de ce serveur
+						QueryFinder query = new QueryFinder(DNSFile, DomainName);
+						String result = query.StartResearch(DomainName);
 					
-						if(true)//*Si la correspondance n'est pas trouvee
+						if(result == null)//*Si la correspondance n'est pas trouvee
 						{
 							//*Rediriger le paquet vers le serveur DNS
+							byte[] udpAPC = new UDPAnswerPacketCreator().CreateAnswerPacket(buf, this.adresseIP);
+							DatagramPacket datagramPacket = new DatagramPacket(udpAPC, udpAPC.length);
+							UDPSender udpSender = new UDPSender(datagramPacket, SERVER_DNS, port);
+							udpSender.setSocket(socket);
+							udpSender.SendPacketNow();
 						}
 						else//*Sinon
 						{
