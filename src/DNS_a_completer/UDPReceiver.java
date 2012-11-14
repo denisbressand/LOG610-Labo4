@@ -159,51 +159,29 @@ public class UDPReceiver extends Thread {
 				System.out.println("nombre de reponse : " + nbReponse);
 				
 				//*Dans le cas d'une reponse
-				String queryDomainName = "";
-				String numbers = "";
+				int count = 0;
+				DomainName=null;
+				//String numbers = "";
 				if(nbReponse == 0){
 					
 				
-					//*Lecture du Query Domain name, a partir du 13 byte
-					int count = 13;
-					
-					boolean go = true;
-					while(count < 100 && go)
-					{
-						int content = Integer.decode(Byte.toString(buf[count]));
-						
-						
-						
-						if(content == 0)
-						{
-							go = false;
-						}
-						else
-						{
-							if( 0 <= content && content <= 32)
-							{
-								content = 46;
-							}
-							
-							char letter = (char) content;
-							queryDomainName += letter;
-							count++;
-							numbers  += content + " ";
-						}
-					}
-					
-					System.out.println(queryDomainName);
-					System.out.println(numbers);
-
+					//*Lecture du Query Domain name, a partir du 13 byte		
 					//*Sauvegarde du Query Domain name
+					count = getQueryDomainName(buf);
 					
-					
+					System.out.println(DomainName);
+					System.out.println("count is at: " + count);
+	
 					//*Passe par dessus Query Type et Query Class
 					//*Passe par dessus les premiers champs du ressource record pour arriver au ressource data
 					//*qui contient l'adresse IP associe au hostname (dans le fond saut de 16 bytes)
 					
 					
+					System.out.println("packet address : " + packet.getAddress().toString());
+					System.out.println("packet port : " + packet.getPort());
 					//*Capture de l'adresse IP
+					this.adresseIP = packet.getAddress().toString();
+					this.port = packet.getPort();
 					
 					//*Ajouter la correspondance dans le fichier seulement si une seule
 					//*reponse dans le message DNS (cette apllication ne traite que ce cas)
@@ -214,7 +192,7 @@ public class UDPReceiver extends Thread {
 					
 				}
 				//*Dans le cas d'une requete
-				if(queryDomainName != null)
+				if(DomainName != null)
 				{
 				
 				
@@ -251,4 +229,37 @@ public class UDPReceiver extends Thread {
 			e.printStackTrace(System.err);
 		}	
 	}
+	
+	private int getQueryDomainName(byte[] buf)
+	{
+		int count = 13;
+		DomainName = "";
+		boolean go = true;
+		while(go)
+		{
+			int content = Integer.decode(Byte.toString(buf[count]));
+				
+			if(content == 0)
+			{
+				go = false;
+			}
+			else
+			{				
+				if( 0 <= content && content <= 32)
+				{
+					content = 46;
+				}		
+					char letter = (char) content;
+					DomainName += letter;
+					count++;
+				}
+			
+		}
+		return count;
+	}
+	
+	
+	
+	
+	
 }
