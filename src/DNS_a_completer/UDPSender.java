@@ -66,13 +66,13 @@ public class UDPSender implements InterfaceUDPServices {
 		//Envoi du packet ˆ un serveur dns pour interrogation
 	
 		try {
-			byte[] buf = new byte[BUF_SIZE];
 			//cree l'adresse de destination
 			addr= InetAddress.getByName(SERVER_DNS);
 			//Crée le packet
 			packet.setAddress(addr);
 			packet.setPort(port);
 			//Envoi le packet
+			System.out.println("???????");
 			SendSocket.send(packet);
 
 			
