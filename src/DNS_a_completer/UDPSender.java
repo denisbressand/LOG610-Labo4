@@ -68,10 +68,10 @@ public class UDPSender implements InterfaceUDPServices {
 		try {
 			byte[] buf = new byte[1000];
 			//cree l'adresse de destination
-			InetAddress address = packet.getAddress();
+			addr= InetAddress.getByName(SERVER_DNS);
 			//Crée le packet
-			packet = new DatagramPacket(buf, buf.length, address, port);
-
+			packet.setAddress(addr);
+			packet.setPort(port);
 			//Envoi le packet
 			SendSocket.send(packet);
 
