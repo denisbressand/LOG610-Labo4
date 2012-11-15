@@ -4,6 +4,9 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import javax.swing.JLabel;
 
 public class ServerInterface extends JFrame {
@@ -43,6 +46,16 @@ public class ServerInterface extends JFrame {
 		});
 		btnActivateServer.setBounds(71, 93, 212, 23);
 		getContentPane().add(btnActivateServer);	
+		
+		JLabel lblIP = new JLabel("IP:");
+		lblIP.setBounds(71, 36, 297, 14);
+		try {
+			lblIP.setText("IP & port : " + InetAddress.getLocalHost().getHostAddress().toString() + ":4444");
+		} catch (UnknownHostException e1) {
+			System.out.println("No IP!");
+			e1.printStackTrace();
+		}
+		getContentPane().add(lblIP);
 		
 		
 		
