@@ -147,7 +147,7 @@ public class UDPReceiver extends Thread {
 				socket.receive(packet);
 				
 				//*Creation d'un DataInputStream ou ByteArrayInputStream pour manipuler les bytes du paquet				
-				ByteArrayInputStream in = new ByteArrayInputStream(buf); 
+				DataInputStream in = new DataInputStream(new ByteArrayInputStream(buf)); 
 				
 				//*Lecture et sauvegarde des deux premier bytes, qui specifie l'identifiant
 				String id = null;
@@ -158,101 +158,120 @@ public class UDPReceiver extends Thread {
 				Integer nbReponse = Integer.decode(Byte.toString(buf[7]));
 				System.out.println("nombre de reponse : " + nbReponse);
 				
-				int count = 0;
+				//int count = 0;
 				DomainName=null;
 
-				if(nbReponse ==  1)//*Dans le cas d'une reponse
+				if (Integer.parseInt(id) > 1) 
 				{
-					//*Lecture du Query Domain name, a partir du 13 byte		
-					//*Sauvegarde du Query Domain name
-					count = getQueryDomainName(buf);
-					
-					System.out.println(DomainName);
-					System.out.println("count is at: " + count);
-	
-					//*Passe par dessus Query Type et Query Class
-					//*Passe par dessus les premiers champs du ressource record pour arriver au ressource data
-					//*qui contient l'adresse IP associe au hostname (dans le fond saut de 16 bytes)
-					System.out.println("packet address : " + packet.getAddress().toString());
-					System.out.println("packet port : " + packet.getPort());
-					
-					//*Capture de l'adresse IP
-					this.adresseIP = packet.getAddress().toString();
-					this.port = packet.getPort();
-					
-					//*Ajouter la correspondance dans le fichier seulement si une seule
-					//*reponse dans le message DNS (cette apllication ne traite que ce cas)
-					AnswerRecorder answerRec = new AnswerRecorder(DNSFile); 
-					answerRec.StartRecord(DomainName, adresseIP);
-					
-					//*Faire parvenir le paquet reponse au demandeur original, ayant emis une requete 
-					//*avec cet identifiant
-					byte[] udpAPC = new UDPAnswerPacketCreator().CreateAnswerPacket(buf, this.adresseIP);
-					DatagramPacket datagramPacket = new DatagramPacket(udpAPC, udpAPC.length);
-					UDPSender udpSender = new UDPSender(datagramPacket, SERVER_DNS, port);
-					udpSender.setSocket(socket);
-					udpSender.SendPacketNow();
-					System.out.println("Si reponse est 1");
-					
-				}				
-				else if(nbReponse == 0)//*Dans le cas d'une requete
-				{
-				
-				
-					//*Lecture du Query Domain name, a partir du 13 byte
-					//*Sauvegarde du Query Domain name
-					int num = getQueryDomainName(buf);
-					
-					//*Sauvegarde de l'adresse, du port et de l'identifiant de la requete
-					this.adrIP = packet.getAddress().toString().substring(1);
-					this.port = packet.getPort();
-					
-					System.out.println("Addrresse du client: " + this.adrIP);
-
-					
-					if(RedirectionSeulement)//*Si le mode est redirection seulement
+					if (nbReponse == 1)//*Dans le cas d'une reponse
 					{
-						//*Rediriger le paquet vers le serveur DNS
-						//byte[] udpAPC = new UDPAnswerPacketCreator().CreateAnswerPacket(buf, this.adrIP);
-						//DatagramPacket datagramPacket = new DatagramPacket(udpAPC, udpAPC.length);
-						UDPSender udpSender = new UDPSender(packet,  SERVER_DNS, port);
-						udpSender.setSocket(socket);
-						udpSender.SendPacketNow();
-					}
-					else//*Sinon
-					{	
-						//*Rechercher l'adresse IP associe au Query Domain name dans le fichier de 
-						//*correspondance de ce serveur
+						//*Lecture du Query Domain name, a partir du 13 byte		
+						//*Sauvegarde du Query Domain name
+						int notNeeded = getQueryDomainName(buf);
+
+						System.out.println(DomainName);
+						//System.out.println("count is at: " + count);
+
+						//*Passe par dessus Query Type et Query Class
+						//*Passe par dessus les premiers champs du ressource record pour arriver au ressource data
+						//*qui contient l'adresse IP associe au hostname (dans le fond saut de 16 bytes)
+						System.out.println("packet address : "+ packet.getAddress().toString());
+						System.out.println("packet port : " + packet.getPort());
+
+						//*Capture de l'adresse IP
+						this.adresseIP = packet.getAddress().getHostAddress();
+						this.port = packet.getPort();
+						
+						in.skip(notNeeded);
+						in.skip(17);
+						
+						Integer one = (int) in.readByte();
+						Integer two = (int) in.readByte();
+						Integer three = (int) in.readByte();
+						Integer four = (int) in.readByte();
+						
+						if(one < 0)
+							one += 256;
+						if(two < 0)
+							two += 256;
+						if(three < 0)
+							three += 256;
+						if(four < 0)
+							four += 256;
+						
+						adresseIP = one.toString() + "." + two.toString() + "." + three.toString() + "." + four.toString();
+
+						//*Ajouter la correspondance dans le fichier seulement si une seule
+						//*reponse dans le message DNS (cette apllication ne traite que ce cas)
 						QueryFinder query = new QueryFinder(DNSFile, DomainName);
 						String result = query.StartResearch(DomainName);
-					
-						if(result.compareTo("none") == 0)//*Si la correspondance n'est pas trouvee
+						
+						if (result.compareTo("none") == 0)
+						{
+							AnswerRecorder answerRec = new AnswerRecorder(DNSFile);
+							answerRec.StartRecord(DomainName, adresseIP);
+						}
+						
+						//*Faire parvenir le paquet reponse au demandeur original, ayant emis une requete 
+						//*avec cet identifiant
+						byte[] udpAPC = new UDPAnswerPacketCreator().CreateAnswerPacket(buf, adresseIP);
+						DatagramPacket newDatagramPacket = new DatagramPacket(udpAPC, udpAPC.length);
+						UDPSender udpSender = new UDPSender(newDatagramPacket, InetAddress.getLocalHost().getHostAddress() , port);
+						udpSender.setSocket(socket);
+						udpSender.SendPacketNow();
+
+					} 
+					else if (nbReponse == 0)//*Dans le cas d'une requete
+					{
+
+						//*Lecture du Query Domain name, a partir du 13 byte
+						//*Sauvegarde du Query Domain name
+						int notNeeded = getQueryDomainName(buf);
+
+						//*Sauvegarde de l'adresse, du port et de l'identifiant de la requete
+						this.adresseIP = packet.getAddress().getHostAddress();
+
+						
+						int newPort = packet.getPort();
+
+						System.out.println("Addrresse du client: " + this.adrIP);
+
+						if (RedirectionSeulement)//*Si le mode est redirection seulement
 						{
 							//*Rediriger le paquet vers le serveur DNS
-							//byte[] udpAPC = new UDPAnswerPacketCreator().CreateAnswerPacket(buf, this.adrIP);
-							//DatagramPacket datagramPacket = new DatagramPacket(udpAPC, udpAPC.length);
-							
-							//packet.setData(udpAPC);
-							//packet.setLength(udpAPC.length);
 							UDPSender udpSender = new UDPSender(packet, SERVER_DNS, port);
-							udpSender.setSocket(socket);
-							System.out.println("Si reqeute est pas trouver, rediriger a un autre serveur dns");
 							udpSender.SendPacketNow();
-						}
-						else//*Sinon
+							
+						} else//*Sinon
 						{
-							
-							//*Creer le paquet de reponse a l'aide du UDPAnswerPaquetCreator
-							byte[] udpAPC = new UDPAnswerPacketCreator().CreateAnswerPacket(buf, result);
-							DatagramPacket datagramPacket = new DatagramPacket(udpAPC, udpAPC.length);
-							
-							//*Placer ce paquet dans le socket	
-							UDPSender udpSender = new UDPSender(datagramPacket, SERVER_DNS, port);
-							udpSender.setSocket(socket);
-							
-							System.out.println("Si reqeute est trouver");
-							//*Envoyer le paquet
-							udpSender.SendPacketNow();
+							//*Rechercher l'adresse IP associe au Query Domain name dans le fichier de 
+							//*correspondance de ce serveur
+							QueryFinder query = new QueryFinder(DNSFile, DomainName);
+							String result = query.StartResearch(DomainName);
+
+							if (result.compareTo("none") == 0)//*Si la correspondance n'est pas trouvee
+							{
+								//*Rediriger le paquet vers le serveur DNS
+								UDPSender udpSender = new UDPSender(packet, SERVER_DNS, port);
+								udpSender.setSocket(socket);
+								udpSender.SendPacketNow();
+								
+							} 
+							else//*Sinon
+							{
+
+								//*Creer le paquet de reponse a l'aide du UDPAnswerPaquetCreator
+								byte[] udpAPC = new UDPAnswerPacketCreator().CreateAnswerPacket(packet.getData(), result);
+								DatagramPacket datagramPacket = new DatagramPacket(udpAPC, udpAPC.length);
+
+								//*Placer ce paquet dans le socket	
+								UDPSender udpSender = new UDPSender(datagramPacket, adresseIP, newPort);
+								udpSender.setSocket(socket);
+
+								System.out.println("Si reqeute est trouver");
+								//*Envoyer le paquet
+								udpSender.SendPacketNow();
+							}
 						}
 					}
 				}

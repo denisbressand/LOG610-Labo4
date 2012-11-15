@@ -43,7 +43,7 @@ public class UDPSender implements InterfaceUDPServices {
 	}
 	
 	public UDPSender(String server_dns,int Port) {
-		this.SERVER_DNS = SERVER_DNS;
+		this.SERVER_DNS = server_dns;
 		this.port = Port;
 	}
 	
@@ -69,10 +69,10 @@ public class UDPSender implements InterfaceUDPServices {
 			//cree l'adresse de destination
 			addr= InetAddress.getByName(SERVER_DNS);
 			//Crée le packet
+			packet = new DatagramPacket(packet.getData(), packet.getLength());
 			packet.setAddress(addr);
 			packet.setPort(port);
 			//Envoi le packet
-			System.out.println("???????");
 			SendSocket.send(packet);
 
 			
