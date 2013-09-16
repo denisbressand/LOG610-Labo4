@@ -26,8 +26,6 @@ import java.awt.event.WindowEvent;
 //Java date and time code
 //http://www.mkyong.com/java/java-how-to-get-current-date-time-date-and-calender/
 
-//test test
-
 public class ServerInterface extends JFrame{
 	
 	/**
